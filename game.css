@@ -70,3 +70,19 @@ html, body {
 .checker:hover{
   background-color: green;
 }
+
+.black-checker{
+  background: #00001F;
+ -webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
+
+.red-checker{
+  background: red;
+ -webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
