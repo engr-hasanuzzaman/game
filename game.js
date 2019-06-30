@@ -24,98 +24,70 @@ $(function() {
 	var row6 = $("[data-row='6']");
 	var row7 = $("[data-row='7']");
 	
-	$('#game-board').find('.js-row').each(function(i, r) {
-		$(r).find('.js-cell').each(function(j, col) {
-			var $col = $(col);
-			var  $elm;
-			if(gameBoardArray[i][j] == 1){
-				$elm = $redChecker.clone();
-				$col.append($elm);
-				// $col.text('red');
-			}else if(gameBoardArray[i][j] == 2){
-				$elm = $blackChecker.clone();
-				$col.append($elm);
-				// $col.text('black');
-			}
-			
-			if($elm){
-				gameBoardArray[i][j] = $elm;
-			}
+	// alert('this is alert');
+	/**
+	 * ============================
+	 * Game initialization section
+	 * ============================
+	 * */ 
+	function initializeGame() {
+		$('#game-board').find('.js-row').each(function(i, r) {
+			$(r).find('.js-cell').each(function(j, col) {
+				var $col = $(col);
+				var  $elm;
+				if(gameBoardArray[i][j] == 1){
+					$elm = createRedChecker(i, j);
+					$col.append($elm);
+				}else if(gameBoardArray[i][j] == 2){
+					$elm = createBlackChecker(i, j);
+					$col.append($elm);
+				}
+				
+				if($elm){
+					gameBoardArray[i][j] = $elm;
+				}
+			});
 		});
-	})
+	}
 
-	// console.log('---file is loading------');
-	// // alert('this is alert');
-	// /**
-	//  * ============================
-	//  * Game initialization section
-	//  * ============================
-	//  * */ 
-	// function initializeGame() {
-	// 	console.log('-------- game is initializing---------');
-	// 	console.log('-----------row7', row7);
-	// 	// set checker with appropriate data
-	
-	// 	createBlackChecker($cell);
-	// }
+	/** 
+	 * =================================
+	 * utility function section
+	 * =================================
+	*/
 
-	// // top part
-	// function initializeBlackChecker() {
-		
-	// }
+	// create black check and attache all the events
+	function createBlackChecker(row, col) {
+		var $elm = $blackChecker.clone();
+		$elm.data('row', row);
+		$elm.data('col', col);
+		attachCliceEvent($elm);
+		return $elm;
+	}
 
-	// // lower part
-	// function initializeRedChecker() {
-		
-	// }
+	// create red check and attache all the events
+	function createRedChecker(row, col) {
+		var $elm = $($redChecker.clone());
+		// $elm.dataset.row = 'row';
+		$elm.data('row', row);
+		$elm.data('col', col);
+		attachCliceEvent($elm);
+		return $elm;
+	}
 
-	// function clearCheck(row, column) {
-		
-	// }
+	function attachCliceEvent($obj) {
+		$obj.on('click', function(e){
+			var $checker = $(e.target);
+			var $cParent = $checker.parent();
+			$checker.toggleClass('selected');
+			// alert('you have clicked' + $cParent.data('row') + $cParent.data('col'));
+		})
+	}
 
-	// /** 
-	//  * =================================
-	//  * utility function section
-	//  * =================================
-	// */
+	/**
+	 * ============== game play section ============
+	 * */ 
 
-	// function createNewCheck($cell, color) {
-	// 	color = color || 'black-checker'
-	// }
-
-	// function createBlackChecker($cell) {
-	// 	var node = document.createElement('<div class="checker black-checker"></div>');
-	// 	$cell.appendChild(node);
-	// }
-
-	// function setDataSet($obj, key, value) {
-	// 	$obj.dataset[key] = value;
-	// }
-
-	// function checker(piece,color,square) {
-	// 	this.id = piece;
-	// 	this.color = color;
-	// 	this.king = false;
-	// 	this.ocupied_square = square;
-	// 	this.alive = true;
-	// 	this.attack = false;
-	// 	if(square%8){
-	// 		this.coordX= square%8;
-	// 		this.coordY = Math.floor(square/8) + 1 ;
-	// 	}
-	// 	else{
-	// 		this.coordX = 8;
-	// 		this.coordY = square/8 ;
-	// 	}
-	// 	this.id.onclick = function  () {
-	// 		showMoves(piece);	
-	// 	}
-	// }
-
-	// /**
-	//  * ============== game play section ============
-	//  * */ 
-
-	// initializeGame();
-	// console.log("----------loading js file");
+	initializeGame();
+	console.log("----------loading js file");
 });
