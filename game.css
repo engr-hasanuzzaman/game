@@ -58,7 +58,7 @@ html, body {
 
 .checker{
 	top:19%;
-	left:2%;
+	/* left:2%; */
 	width: 54px;
 	height: 54px;
 	border-radius: 50%;
