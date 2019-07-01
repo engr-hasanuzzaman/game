@@ -88,3 +88,7 @@ html, body {
   -o-transition: 0.3s ease-in-out;
   transition: 0.3s ease-in-out;
 }
+
+.cell.path{
+  background: greenyellow !important;
+}

@@ -1,7 +1,7 @@
 
 $(function() {
-	console.log("this si asdfasdf");
 	var $gameBoard = $('#game-board');
+	var currentTurn = 'black'; // black or red
 	var $blackChecker = $('<div class="checker black-checker js-black-checker"></div>');
 	var $redChecker = $('<div class="checker red-checker js-red-checker"></div>');
 	// initial board setting, 1 means red checker, 2 means black checker
@@ -77,13 +77,80 @@ $(function() {
 
 	function attachCliceEvent($obj) {
 		$obj.on('click', function(e){
+			if(isAnySelectedChecker()){
+				resetPath();
+				return resetAllChecker();
+			}
+
 			var $checker = $(e.target);
 			var $cParent = $checker.parent();
 			$checker.toggleClass('selected');
+			showCheckerMove($checker);
 			// alert('you have clicked' + $cParent.data('row') + $cParent.data('col'));
 		})
 	}
+	
 
+	function isAnySelectedChecker() {
+		if($('.checker.selected').length >= 1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	function showCheckerMove($checker){
+		var rowColumn = getCheckerRowColumn($checker);
+    var row = rowColumn[0];
+		var col = rowColumn[1];
+		if(isBlackChecker($checker)){
+			// black checker path is 7 to 0
+			// first cell will be row - 1, col - 1, row - 1, col + 1
+			var $lCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col - 1) + "']");
+			var $rCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col + 1) + "']");
+			$lCell.addClass('path');
+			$rCell.addClass('path');
+		}else{
+			// red checker path is 0 to 7
+			// first cell will be row + 1, col + 1, row - 1, col + 1
+			var $lCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col - 1) + "']");
+			var $rCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col + 1) + "']");
+			$lCell.addClass('path');
+			$rCell.addClass('path');
+		}
+	}
+
+	function getCheckerType($checker){
+		if($checker.hasClass('js-black-checker')){
+			return 'black';
+		}else{
+			return 'red';
+		}
+	}
+
+	function isBlackChecker($checker){
+		return getCheckerType($checker) == 'black'
+	}
+
+	// return array, first is row then column
+	function getCheckerRowColumn($checker){
+		var $cParent = $checker.parent();
+		var row = $cParent.data('row');
+		var col = $cParent.data('col');
+		
+		return [row, col];
+	}
+	/**==============================
+	 * Helper fucntion for resetting 
+	 *================================  */
+	function resetPath() {
+		$('.cell.path').removeClass('path');
+	}
+
+	function resetAllChecker() {
+		$('.checker').removeClass('selected');
+	} 
+	
 	/**
 	 * ============== game play section ============
 	 * */ 
