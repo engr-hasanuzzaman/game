@@ -29,7 +29,8 @@ $(function() {
 
 			if($cell.hasClass('path')){
 				makeMove($selectedChecker, $cell);
-				gameBoardArray[rowCol[0], rowCol[1]] = 0;
+				// mark old cell moveable
+				gameBoardArray[rowCol[0]][rowCol[1]] = 0;
 			}
 
 			resetAllChecker();
@@ -46,11 +47,12 @@ $(function() {
 	var row6 = $("[data-row='6']");
 	var row7 = $("[data-row='7']");
 	
-	// alert('this is alert');
 	/**
-	 * ============================
+	 * ===================================
 	 * Game initialization section
-	 * ============================
+	 * 1. find cell and add proper checker
+	 * 2. Add element to gameBoardArray
+	 * ===================================
 	 * */ 
 	function initializeGame() {
 		$('#game-board').find('.js-row').each(function(i, r) {
@@ -108,6 +110,12 @@ $(function() {
 			}
 
 			var $checker = $(e.target);
+			
+			// check appropriate turn
+			if((isBlackChecker($checker) && currentTurn != 'black') || (!isBlackChecker($checker) && currentTurn != 'red')) {
+				return;
+			}
+
 			var $cParent = $checker.parent();
 			// check is there any empty path?
 			var paths = getCheckerPath($checker);
@@ -124,6 +132,9 @@ $(function() {
 	}
 	
 	// return array of moveable cells object
+	/** 
+	 * 
+	 * */
 	function getCheckerPath($checker) {
 		var rowColumn = getCheckerRowColumn($checker);
     var row = rowColumn[0];
@@ -131,6 +142,9 @@ $(function() {
 		var paths = [];
 
 		if(isBlackChecker($checker)){
+			if(currentTurn != 'black'){
+				return;
+			}
 			// black checker path is 7 to 0
 			// first cell will be row - 1, col - 1, row - 1, col + 1
 			var $lCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col - 1) + "']");
@@ -144,6 +158,9 @@ $(function() {
 				paths[1] = $rCell
 			}
 		}else{
+			if(currentTurn != 'red'){
+				return;
+			}
 			// red checker path is 0 to 7
 			// first cell will be row + 1, col + 1, row - 1, col + 1
 			var $lCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col - 1) + "']");
@@ -153,7 +170,7 @@ $(function() {
 				paths[0] = $lCell
 			}
 			
-			if(gameBoardArray[row + 1][col - 1] == 0){
+			if(gameBoardArray[row + 1][col + 1] == 0){
 				paths[1] = $rCell
 			}
 		}
@@ -201,7 +218,15 @@ $(function() {
 		
 		return [row, col];
 	}
-	/**==============================
+
+	// return array, first is row then column
+	function getCellRowColumn($checker){
+		var row = $checker.data('row');
+		var col = $checker.data('col');
+		
+		return [row, col];
+	}
+	/**===============================
 	 * Helper fucntion for resetting 
 	 *================================  */
 	function resetPath() {
@@ -210,17 +235,31 @@ $(function() {
 
 	function resetAllChecker() {
 		$('.checker').removeClass('selected');
+		$selectedChecker = undefined;
 	} 
 	
 	// move checker to new cell
 	function makeMove($checker, $newCell) {
 		$checker.detach().appendTo($newCell);
 		// attachCliceEvent($checker);
+		var parentRowCol = getCellRowColumn($newCell);
+		gameBoardArray[parentRowCol[0]][parentRowCol[1]] = $checker;
+		$selectedChecker = undefined;
+		toggleCurrentTurn();
 	}
-	/**
-	 * ============== game play section ============
-	 * */ 
 
+	/**==========================================
+	 * game play section
+	 *========================================== */ 
+	function toggleCurrentTurn() {
+		if(currentTurn == 'black'){
+			currentTurn = 'red';
+		}else{
+			currentTurn = 'black';
+		}
+
+		$('.js-current-turn').text(currentTurn);
+	}
+	
 	initializeGame();
-	console.log("----------loading js file");
 });

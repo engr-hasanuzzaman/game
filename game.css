@@ -92,3 +92,12 @@ html, body {
 .cell.path{
   background: greenyellow !important;
 }
+
+/* style for game info section */
+.info{
+  position: fixed;
+  left: 10;
+  top: 20;
+  padding: 20px;
+  text-transform: capitalize;
+}
