@@ -101,7 +101,7 @@ $(function() {
 	function attachCliceEvent($obj) {
 		$obj.on('click', function(e){
 			e.stopPropagation(); // do not move this event to cell
-			
+			console.log('-----clicked on checker');
 			if(isAnySelectedChecker()){
 				resetPath();
 				return resetAllChecker();
@@ -140,7 +140,7 @@ $(function() {
 				paths[0] = $lCell
 			}
 			
-			if(gameBoardArray[row - 1][col - 1] == 0){
+			if(gameBoardArray[row - 1][col + 1] == 0){
 				paths[1] = $rCell
 			}
 		}else{
@@ -215,6 +215,7 @@ $(function() {
 	// move checker to new cell
 	function makeMove($checker, $newCell) {
 		$checker.detach().appendTo($newCell);
+		// attachCliceEvent($checker);
 	}
 	/**
 	 * ============== game play section ============
