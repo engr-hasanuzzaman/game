@@ -101,3 +101,13 @@ html, body {
   padding: 20px;
   text-transform: capitalize;
 }
+.info{
+  color: green;
+}
+.red{
+  color: red;
+}
+
+.black{
+  color: #000000;
+}

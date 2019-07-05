@@ -258,7 +258,7 @@ $(function() {
 			currentTurn = 'black';
 		}
 
-		$('.js-current-turn').text(currentTurn);
+		$('.js-current-turn').text(currentTurn).toggleClass('black').toggleClass('red');
 	}
 	
 	initializeGame();
