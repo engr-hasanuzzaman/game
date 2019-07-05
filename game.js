@@ -38,15 +38,6 @@ $(function() {
 		});
 	}());
 
-	var row0 = $("[data-row='0']");
-	var row1 = $("[data-row='1']");
-	var row2 = $("[data-row='2']");
-	var row3 = $("[data-row='3']");
-	var row4 = $("[data-row='4']");
-	var row5 = $("[data-row='5']");
-	var row6 = $("[data-row='6']");
-	var row7 = $("[data-row='7']");
-	
 	/**
 	 * ===================================
 	 * Game initialization section
@@ -176,6 +167,10 @@ $(function() {
 		}
 		
 		return paths;
+	}
+
+	function name(params) {
+		
 	}
 
 	// is there any selected checker?
