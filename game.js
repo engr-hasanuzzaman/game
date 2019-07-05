@@ -131,11 +131,13 @@ $(function() {
     var row = rowColumn[0];
 		var col = rowColumn[1];
 		var paths = [];
+		var checker_color;
 
 		if(isBlackChecker($checker)){
 			if(currentTurn != 'black'){
 				return;
 			}
+			checker_color = 'black';
 			// black checker path is 7 to 0
 			// first cell will be row - 1, col - 1, row - 1, col + 1
 			var $lCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col - 1) + "']");
@@ -152,25 +154,57 @@ $(function() {
 			if(currentTurn != 'red'){
 				return;
 			}
+			checker_color = 'red';
 			// red checker path is 0 to 7
 			// first cell will be row + 1, col + 1, row - 1, col + 1
-			var $lCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col - 1) + "']");
-			var $rCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col + 1) + "']");
+			var $lCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col + 1) + "']");
+			var $rCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col - 1) + "']");
 			
 			if(gameBoardArray[row + 1][col - 1] == 0){
 				paths[0] = $lCell
+			}else{
+				var uPath = huntableChecker($lCell, checker_color, 1);
+				console.log('--hunted path ' + uPath[0] + ' ' + uPath[1]);
 			}
 			
 			if(gameBoardArray[row + 1][col + 1] == 0){
 				paths[1] = $rCell
+			}else{
+				var uPath = huntableChecker($rCell, checker_color, -1);
+				console.log('--hunted path ' + uPath[0] + ' ' + uPath[1])
 			}
 		}
 		
 		return paths;
 	}
 
-	function name(params) {
-		
+	// direct indicate -1 or 1 depenting on direction
+	function huntableChecker($tCell, c_color, direction) {
+		indices = []
+		var $tChecker = $tCell.children('.checker');
+		if(c_color == 'black'){
+			if(!isBlackChecker($tChecker)){
+				var rowColumn = getCheckerRowColumn($tChecker);
+				var row = rowColumn[0];
+				var col = rowColumn[1];
+
+				if(gameBoardArray[row - 1][col + direction] == 0){
+					indices = [row - 1, col + direction]
+				}
+			}
+		}else{
+			if(isBlackChecker($tChecker)){
+				var rowColumn = getCheckerRowColumn($tChecker);
+				var row = rowColumn[0];
+				var col = rowColumn[1];
+
+				if(gameBoardArray[row + 1][col + direction] == 0){
+					indices = [row + 1, col + direction]
+				}
+			}
+		}
+
+		return indices;
 	}
 
 	// is there any selected checker?
@@ -202,7 +236,7 @@ $(function() {
 	}
 
 	function isBlackChecker($checker){
-		return getCheckerType($checker) == 'black'
+		return getCheckerType($checker) == 'black';
 	}
 
 	// return array, first is row then column
