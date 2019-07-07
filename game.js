@@ -5,6 +5,8 @@ $(function() {
 	var $selectedChecker; 
 	var $blackChecker = $('<div class="checker black-checker js-black-checker"></div>');
 	var $redChecker = $('<div class="checker red-checker js-red-checker"></div>');
+	var markDelete;
+	var huntedRowCol = [];
 	// initial board setting, 1 means red checker, 2 means black checker
 	var gameBoardArray = [
 		[1, -5, 1, -5, 1, -5, 1, -5],
@@ -35,6 +37,7 @@ $(function() {
 
 			resetAllChecker();
 			resetPath();
+			markHunt();
 		});
 	}());
 
@@ -142,13 +145,29 @@ $(function() {
 			// first cell will be row - 1, col - 1, row - 1, col + 1
 			var $lCell = getCellByRowCol(row - 1, col - 1);
 			var $rCell = getCellByRowCol(row - 1, col + 1);
-			
+
 			if(gameBoardArray[row - 1][col - 1] == 0){
-				paths[0] = $lCell
+				paths[0] = $lCell;
+			}else if(gameBoardArray[row - 1][col - 1] != undefined){
+				var uPath = huntableChecker($lCell, checker_color, -1);
+				if(uPath[0] && uPath[1]){
+					markDelete = gameBoardArray[row - 1][col - 1];
+					huntedRowCol[0]= [row - 1];
+					huntedRowCol[1]= [col - 1];
+					paths[0] = getCellByRowCol(uPath[0], uPath[1]);
+				}
 			}
 			
 			if(gameBoardArray[row - 1][col + 1] == 0){
-				paths[1] = $rCell
+				paths[1] = $rCell;
+			}else if(gameBoardArray[row - 1][col + 1] != undefined){ 
+				var uPath = huntableChecker($rCell, checker_color, 1);
+				if(uPath[0] && uPath[1]){
+					markDelete = gameBoardArray[row - 1][col + 1];
+					huntedRowCol[0]= [row - 1];
+					huntedRowCol[1]= [col + 1];
+					paths[1] = getCellByRowCol(uPath[0], uPath[1]);
+				}
 			}
 		}else{
 			if(currentTurn != 'red'){
@@ -162,20 +181,25 @@ $(function() {
 			
 			if(gameBoardArray[row + 1][col + 1] == 0){
 				paths[0] = $lCell;
-			}else if(gameBoardArray[row + 1][col - 1] != undefined){
+			}else if(gameBoardArray[row + 1][col + 1] != undefined){
 				var uPath = huntableChecker($lCell, checker_color, 1);
 				if(uPath[0] && uPath[1]){
-					markHunt(uPath);
+					markDelete = gameBoardArray[row + 1][col + 1];
+					huntedRowCol[0]= [row + 1];
+					huntedRowCol[1]= [col + 1];
+					paths[0] = getCellByRowCol(uPath[0], uPath[1]);
 				}
 			}
 			
 			if(gameBoardArray[row + 1][col - 1] == 0){
 				paths[1] = $rCell;
-			}else if(gameBoardArray[row + 1][col + 1] != undefined){ 
+			}else if(gameBoardArray[row + 1][col - 1] != undefined){ 
 				var uPath = huntableChecker($rCell, checker_color, -1);
 				if(uPath[0] && uPath[1]){
-					markHunt(uPath);
-					paths[1] = $rCell;
+					markDelete = gameBoardArray[row + 1][col - 1];
+					huntedRowCol[0]= [row + 1];
+					huntedRowCol[1]= [col - 1];
+					paths[1] = getCellByRowCol(uPath[0], uPath[1]);
 				}
 			}
 		}
@@ -213,7 +237,14 @@ $(function() {
 	}
 
 	function markHunt(){
+		if(!markDelete){
+			return
+		}
 
+		markDelete.detach();
+		gameBoardArray[huntedRowCol[0]][huntedRowCol[1]] = 0;
+		huntedRowCol = [];
+		markDelete = undefined;
 	}
 
 	// is there any selected checker?
