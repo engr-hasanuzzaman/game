@@ -7,7 +7,7 @@ $(function() {
 	var $redChecker = $('<div class="checker red-checker js-red-checker"></div>');
 	// initial board setting, 1 means red checker, 2 means black checker
 	var gameBoardArray = [
-		[1, -5, 1, -5, 1, 0, 1, -5],
+		[1, -5, 1, -5, 1, -5, 1, -5],
 		[0, 1, -5, 1, 0, 1, -5, 1],
 		[1, -5, 1, -5, 1, -5, 1, -5],
 		[-5, 0, 0, 0, -5, 0, -5, 0],
@@ -140,8 +140,8 @@ $(function() {
 			checker_color = 'black';
 			// black checker path is 7 to 0
 			// first cell will be row - 1, col - 1, row - 1, col + 1
-			var $lCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col - 1) + "']");
-			var $rCell = $("[data-row='" + (row - 1) + "']" + "[data-col='" + (col + 1) + "']");
+			var $lCell = getCellByRowCol(row - 1, col - 1);
+			var $rCell = getCellByRowCol(row - 1, col + 1);
 			
 			if(gameBoardArray[row - 1][col - 1] == 0){
 				paths[0] = $lCell
@@ -157,21 +157,26 @@ $(function() {
 			checker_color = 'red';
 			// red checker path is 0 to 7
 			// first cell will be row + 1, col + 1, row - 1, col + 1
-			var $lCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col + 1) + "']");
-			var $rCell = $("[data-row='" + (row + 1) + "']" + "[data-col='" + (col - 1) + "']");
-			
-			if(gameBoardArray[row + 1][col - 1] == 0){
-				paths[0] = $lCell
-			}else{
-				var uPath = huntableChecker($lCell, checker_color, 1);
-				console.log('--hunted path ' + uPath[0] + ' ' + uPath[1]);
-			}
+			var $lCell = getCellByRowCol(row + 1, col + 1);
+			var $rCell = getCellByRowCol(row + 1, col - 1);
 			
 			if(gameBoardArray[row + 1][col + 1] == 0){
-				paths[1] = $rCell
-			}else{
+				paths[0] = $lCell;
+			}else if(gameBoardArray[row + 1][col - 1] != undefined){
+				var uPath = huntableChecker($lCell, checker_color, 1);
+				if(uPath[0] && uPath[1]){
+					markHunt(uPath);
+				}
+			}
+			
+			if(gameBoardArray[row + 1][col - 1] == 0){
+				paths[1] = $rCell;
+			}else if(gameBoardArray[row + 1][col + 1] != undefined){ 
 				var uPath = huntableChecker($rCell, checker_color, -1);
-				console.log('--hunted path ' + uPath[0] + ' ' + uPath[1])
+				if(uPath[0] && uPath[1]){
+					markHunt(uPath);
+					paths[1] = $rCell;
+				}
 			}
 		}
 		
@@ -207,6 +212,10 @@ $(function() {
 		return indices;
 	}
 
+	function markHunt(){
+
+	}
+
 	// is there any selected checker?
 	function isAnySelectedChecker() {
 		if($('.checker.selected').length >= 1){
@@ -218,6 +227,7 @@ $(function() {
 
 	// set path class to cell 
 	function showCheckerMove(cells){
+		console.log(cells[0], cells[1]);
 		if(cells[0]){
 			cells[0].addClass('path');
 		}
@@ -254,6 +264,10 @@ $(function() {
 		var col = $checker.data('col');
 		
 		return [row, col];
+	}
+
+	function getCellByRowCol(row, column) {
+		return $($("[data-row='" + row + "']" + "[data-col='" + column + "']")[0]);
 	}
 	/**===============================
 	 * Helper fucntion for resetting 
